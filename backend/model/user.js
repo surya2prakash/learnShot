@@ -18,12 +18,19 @@ const userSchema = new mongoose.Schema(
       email:{
           type:String,
           required:true,
-          trim:true
+          trim:true,
+          toLowerCase:true
       },
     //   password --->
       password:{
           type:String,
           required:true,
+          trim:true,
+          select:false
+      },
+    //  image-url --->
+      image:{
+          type:String,
           trim:true
       },
     //   account types ---> "Admin","Instructor","Student"
@@ -44,9 +51,26 @@ const userSchema = new mongoose.Schema(
             type:mongoose.Schema.Types.ObjectId,
             ref:"Course"
         }
-    ]
+    ],
+    
+    // user course-progress --> 
+      courseProgress:[{
+          type:mongoose.Schema.Types.ObjectId,
+          ref:"CourseProgress"
+      }],
 
+      approved:{
+         type:Boolean,
+         default:true
+      },
 
+      token:{
+          type:String
+      },
+      resetPasswordExpire:{
+          type:Date
+      }
+      
      },
     // timeStamps for when doc is created and modified --> save
     {timestamps:true}
