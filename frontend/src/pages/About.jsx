@@ -64,7 +64,7 @@ export default function About() {
                 </p>
                     </div>
                        <div>
-                         <img src={FoundingStory} alt=''/>
+                         <img src={FoundingStory} alt='no'/>
                     </div>
                 </div>    
             </div>
