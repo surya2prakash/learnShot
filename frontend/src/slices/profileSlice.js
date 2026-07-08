@@ -3,7 +3,7 @@ import { login, logout } from "../services/operations/authApi";
 
 
 const initialState ={
-      user:null,
+      user:localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) :null,
       loading:false
 };
 
@@ -23,6 +23,7 @@ const profileSlice = createSlice({
               builder
               .addCase(login.fulfilled,(state,action)=>{
                         state.user = action.payload.user
+                        localStorage.setItem("user",JSON.stringify(action.payload.user));
               })
               .addCase(logout.fulfilled,(state,action)=>{
                        state.user = null;
