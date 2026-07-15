@@ -28,7 +28,7 @@ const {
 // get All course ----->
 export const getAllCourse = async()=>{
     const toastId = toast.loading("Loading...");
-    let result = [];
+    const result = [];
        try{
             const response = await apiConnector("GET",GET_ALL_COURSE_API);
 
@@ -97,7 +97,7 @@ export const addCourseDetails = async(data)=>{
            
     const toastId = toast.loading("Loading...");
 
-          let result = [];
+          const result = [];
        try{
           const response = await apiConnector("POST",CREATE_COURSE_API,{
             data
@@ -119,7 +119,7 @@ export const addCourseDetails = async(data)=>{
 
 export const editCourseDetails = async() =>{
       const toastId = toast.loading("Loading...");
-       let result = null;
+       const result = null;
       try{
 
         const response = await apiConnector("POST",EDIT_COURSE_API);
@@ -137,4 +137,279 @@ export const editCourseDetails = async() =>{
            toast.dismiss(toastId);
            return result;
       }
+}
+
+export const createSection = async(data)=>{
+       
+    const toastId = toast.loading("Loading...");
+
+    const result = [];
+
+       try{
+             const response = await apiConnector("POST",CREATE_SECTION_API,{
+                data
+             });
+
+             if(!response?.data?.success){
+                  throw new Error("Could not create section");
+             };
+
+         result = resposne?.data?.data
+       }catch(error){
+            console.log(error);
+            toast.error(error?.message);
+       }finally{
+            toast.dismiss(toastId);
+            return result
+       }
+};
+
+export const createSubSection = async(data)=>{
+       
+       const toastId = toast.loading("Loading...");
+       const result = null  ;
+        try{
+
+          const response = await apiConnector("POST",CREATE_SUBSECTION_API,{
+               data
+          });
+
+          if(!response?.data?.success){
+                throw new Error("Could not create Sub section");
+          };
+
+          result = response?.data?.data
+
+        }catch(error){
+            console.log("Create Sub Section api error -->",error)
+            toast.error(error?.message)
+        
+        }finally{
+            toast.dismiss(toastId)
+            return result
+        }
+};
+
+export const updateSection = async(data)=>{
+       const toastId = toast.loading("Loading...");
+
+       const result =null;
+
+       try{
+
+          const response = await apiConnector("PATCH",UPDATE_SECTION_API,{
+               data
+          });
+
+          if(!response?.data?.success){
+                 throw new Error("Could not update section");
+          };
+
+          result = response?.data?.data ;
+
+       }catch(error){
+            toast.error(error?.message);
+            console.log("Update Section api error -->",error);
+       }finally{
+            toast.dismiss(toastId);
+            return result;
+       }
+};
+
+export const updateSubSection = async(data)=>{
+       const toastId = toast.loading("Loading...");
+       const result =null ;
+
+       try{
+
+          const response = await apiConnector("PATCH",UPDATE_SUBSECTION_API,{
+               data
+          });
+
+          if(!response?.data?.success){
+                 throw new Error("Could not update sub section");
+          };
+
+          result = response?.data?.data ;
+       }catch(error){
+            toast.error(error?.message);
+            console.log("Update Sub Section api error -->",error);
+       }finally{
+            toast.dismiss(toastId);
+            return result;
+       }
+};
+
+export const deleteSection = async(data)=>{
+        
+        const toastId = toast.loading("Loading...");
+        const result = null ;
+
+        try{
+           const response = await apiConnector("DELETE",DELETE_SECTION_API,{
+               data
+           })
+
+           if(!response?.data?.success){
+                 throw new Error("Could not Delete section");
+           };
+
+           result = response?.data?.data ;
+        }catch(error){
+            toast.error(error?.message);
+            console.log("Delete Section Api Error -->",error);
+        }finally{
+           toast.dismiss(toastId);
+           return result ;
+        }
+};
+
+export const deteleSubSection = async(data) =>{
+        const toastId = toast.loading("Loading...");
+
+        const result = null ;
+
+        try{
+
+          const response = await apiConnector("DELETE",DELETE_SECTION_API,data);
+
+          if(!response?.data?.success){
+                 throw new Error("Could not Delete Sub Section");
+          };
+
+          result = response?.data?.data
+
+        }catch(error){
+             console.log("Delete Sub Section Api Error --->",error);
+             toast.error(error?.message);
+        }finally{
+             toast.dismiss(toastId);
+             return result;
+        }
+};
+
+export const deleteCourse = async(data) =>{
+       const toastId = toast.loading("Loading...");
+       
+       const result = null ;
+
+       try{
+
+          const response = await apiConnector("DELETE",DELETE_COURSE_API,data);
+
+          if(!response?.data?.success){
+                 throw new Error("Could not Delete the Course");
+          };
+
+          result = response?.data?.data;
+
+       }catch(error){
+            toast.error(error?.message);
+            console.log("Delete Course Error Api -->",error);
+       }finally{
+             toast.dismiss(toastId);
+             return result ;
+       }
+}
+
+export const fetchInstructorCourse = async()=>{
+     // this fetch the specific instructor all courses -->
+     const toastId = toast.loading("Loading...");
+
+     const result = null ;
+
+     try{
+          const response = await apiConnector("GET",GET_ALL_INSTRUCTOR_COURSE_API);
+
+          if(!response?.data?.success){
+                 throw new Error("Could not Get the instructor courses.");
+          };
+
+          result = response?.data?.data;
+     }catch(error){
+            toast.error(error?.message);
+            console.error("Error while Instructor course api -->",error);
+     }finally{
+            toast.dismiss(toastId);
+            return result;
+     }
+};
+
+// geting full details of the course --->
+export const detailsOfCourse = async()=>{
+        const toastId = toast.loading("Loading...");
+
+        const result =null;
+
+        try{
+
+          const repsosne = await apiConnector("GET",GET_FULLCOURSE_DETAILS_AUTHENTICATED);
+
+          if(!repsosne?.data?.success){
+               throw new Error("Could Not Get Details Of Course");
+          }
+
+          result = response?.data?.data ;
+
+        }catch(error){
+
+            toast.error(error?.message);
+            console.log("Error in Details of course api -->",error);
+
+     
+        }finally{
+            toast.dismiss(toast)
+
+            return result ;
+        }
+}
+
+// api for marking the lecture complete -->
+
+export const markLectureComplete = async(data)=>{
+       const toastId = toast.loading("Loading...");
+
+       const result = null ;
+
+       try{
+          const response = await apiConnector("POST",LECTURE_COMPLETION_API,data);
+
+          if(!response?.data?.success){
+                 throw new Error("Could not Mark Leacture complete.");
+          };
+
+         result = response?.data?.data
+       }catch(error){
+
+          toast.error(error?.message);
+          console.log("Error while markLectureComplete Api -->",error)
+
+       }finally{
+             toast.dismiss(toastId);
+             return result ;
+       }
+}
+
+export const createRating = async(data) =>{
+        const toastId = toast.loading("Loading...");
+
+        const result = null ;
+
+        try{
+
+          const response = await apiConnector("POST",CREATE_RATING_API,data);
+
+          if(!response?.data?.success){
+                 throw new Error("Could not Create Rating")
+          };
+
+          result = response?.data?.data ;
+
+        }catch(error){
+            toast.error(error?.message);
+            console.log("Error while Create Rating api -->",error);
+        }finally{
+            toast.dismiss(toastId);
+            return result ;
+        }
 }
