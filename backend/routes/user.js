@@ -12,7 +12,7 @@ const {sendOtp}=require("../controller/OTP/sendOtp");
 
 const {contactUs} = require("../controller/User/contactUs")
 
-router.post("/sign",signup);
+router.post("/signup",signup);
 
 router.post("/login",logIn);
 
@@ -24,6 +24,27 @@ router.post("/reset-password-token",resetPasswordToken);
 
 router.post("/reset-password",resetpassword);
 
-router.post("/contact",contactUs);
+router.post("/contact-Us",contactUs);
+
+router.post("/logout",auth,async(req,res)=>{
+       try{
+          
+        res.clearCookie("token",{
+             httpOnly:true,
+             secure:false
+        });
+
+        return res.status(200).json({
+              success:true,
+              message:"Logout successfully."
+        })
+
+       }catch(err){
+          res.status(500).json({
+             success:false,
+             message:"Unable to remove cookie."
+          })
+       }
+})
 
 module.exports = router ;
