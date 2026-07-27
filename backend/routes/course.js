@@ -7,8 +7,9 @@ const {auth,isInstructor, isStudent} = require("../middleware/auth");
 
 // course ---------------->
 const {createcourse} = require("../controller/course/createCourse");
-const {singleCourse,allCourse} = require("../controller/course/getCourse");
+const {singleCourse,allCourse,getInstructorCourses} = require("../controller/course/getCourse");
 const {editCourse} = require("../controller/course/updateCourse");
+const {deletecourse} = require("../controller/course/deleteCourse")
 
 // section -------------->
 const {createsection} = require("../controller/Section/createSection");
@@ -40,6 +41,8 @@ router.post("/createcourse",auth,isInstructor,createcourse);
 router.get("/getCourses",auth,allCourse);
 router.get("/getCourse",auth,singleCourse);
 router.patch("/editcourse",auth,isInstructor,editCourse);
+router.delete("/deletecourse",auth,isInstructor,deletecourse);
+router.get("/allinstructorcourses",auth,isInstructor,getInstructorCourses);
 
 // *********************************************************************
 // *                       Section                                     *
@@ -66,7 +69,7 @@ router.post("/updatecourseprogress",auth,isStudent,updateCourseProgress);
 // *                  Category                                  *
 // **************************************************************
    router.post("/createcategory",auth,isInstructor,createcategory);
-   router.get("/category",auth,getAllCategory);
+   router.get("/category",getAllCategory);
 
 // ****************************************************************
 // *                     Rating and Review                        *
