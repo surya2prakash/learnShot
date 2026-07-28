@@ -27,6 +27,8 @@ export default function CourseInformationForm (){
       }
 
           function submitHandler(data){
+
+            console.log(data);
             if(editCourse){
                 // if edit Course true then -->
 
@@ -36,10 +38,24 @@ export default function CourseInformationForm (){
                     const formData = new FormData();
 
                     formData.append("courseId",course?._id);
-
+                    formData.append("categoryId",courseCategory?._id);
+                    formData.append("whatYouWillLearn",)
                     
                 }
             }
+
+
+            const formData = new FormData();
+
+            formData.append("courseName",data?.courseTitle);
+            formData.append("categoryId",data?.courseCategory);
+            formData.append("price",data?.coursePrice);
+            formData.append("whatYouWillLearn",data?.courseBenefits);
+            formData.append("description",data?.desription);
+            formData.append("tags",data?.courseTags);
+            formData.append("instructions",data?.courseRequirements);
+            formData.append("thumbnailImage",data?.courseImage);
+            formData.append("categoryId",data?.courseCategoryId)
               
           };
 
@@ -48,14 +64,18 @@ export default function CourseInformationForm (){
                       setLoading(true);
 
                       const categories = await fetchCourseCategory();
-                      
+                        
                       if(categories.length > 0){
+                           
                           setCourseCategory(categories);
+                          
                       }
                       setLoading(false);
                 }
                 getCategories();
-          },[]);
+          },[setCourseCategory]);
+
+         
       return(
          <div>
               <form className="space-y-8 rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-6" onSubmit={handleSubmit(submitHandler)}>
@@ -106,14 +126,18 @@ export default function CourseInformationForm (){
                         <label htmlFor="course-category" className="text-sm text-richblack-5">
                             Course category <sup className="text-pink-200">*</sup>
                         </label>
-                        <select defaultValue="" id="course-category" className="form-style w-full" >
+                        <select defaultValue="" id="course-category" className="form-style w-full" 
+                          {...register("courseCategoryId",{required:true})}
+                         >
+                           
                              <option value="" disabled>
                                  Choose a category
                              </option>
                              {
                                 !loading && courseCategory?.map((category,idx)=>(
-                                    <option key={idx} value={category?.id}>
-                                          {category?.name} 
+                                    
+                                    <option key={idx} value={category?._id}>
+                                          {category?.categoryName} 
                                     </option>
                                 ))
                              }
