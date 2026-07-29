@@ -2,31 +2,42 @@ import { useForm } from "react-hook-form"
 import { HiOutlineCurrencyRupee } from "react-icons/hi"
 import ChipInput from "./ChipInput";
 import Upload from "../Upload";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import RequirementsField from "./RequirementsField";
 import IconBtn from './../../../../Common/IconBtn'
-import { fetchCourseCategory } from "../../../../../services/operations/courseDetailsApi";
+import { addCourseDetails, editCourseDetails, fetchCourseCategory } from "../../../../../services/operations/courseDetailsApi";
+import toast from "react-hot-toast";
+import{COURSE_STATUS} from "../../../../../utils/Constants"
 
 
 export default function CourseInformationForm (){
 
       const {handleSubmit,register,formState:{errors},getValues,setValue}= useForm();
      
-      const {course,editCourse}= useSelector(state=>state.course);
+      const {course,editCourse,setStep,setCourse}= useSelector(state=>state.course);
 
       const[loading,setLoading] = useState(false);
 
       const [courseCategory,setCourseCategory]=useState([]);
 
+      const dispatch = useDispatch();
+
 
       const isFormUpdated =()=>{
             const currentValues = getValues();
-
-              console.log(currentValues);
+            // checking the update information about the course if any of these value se updated return true either return false -->
+             if(currentValues.courseTitle !== course?.courseName || currentValues?.desctiption !== course?.description
+                 || currentValues?.courseTags.toString() !== course?.tags.toString() || currentValues?.courseImage !== course?.thumbnailImage 
+                 || currentValues?.courseBenefits !== course?.whatYouWillLearn || currentValues?.courseCategoryId !== course?.categoryId 
+                  || currentValues?.courseRequirements !== course?.instructions || currentValues?.coursePrice !== course?.price
+             ){
+                 return true ;
+             };
+             return false ;
       }
 
-          function submitHandler(data){
+        const submitHandler = async(data)=>{
 
             console.log(data);
             if(editCourse){
@@ -38,25 +49,85 @@ export default function CourseInformationForm (){
                     const formData = new FormData();
 
                     formData.append("courseId",course?._id);
-                    formData.append("categoryId",courseCategory?._id);
-                    formData.append("whatYouWillLearn",)
                     
+                    if(currentValues.courseTitle !== course?.courseName){
+                        //  that means course name is changed -->
+                        formData.append("courseName",data?.courseTitle);
+                    };
+
+                    if(currentValues?.description !== course?.description){
+                        //   that means course description is changed -->
+                        formData.append("description",data?.description);
+                    }
+
+                    if(currentValues?.courseTags !== JSON.stringify(course?.tags)){
+                        //   that means tags is changed-->
+                        formData.append("tags",data?.courseTags);
+                    }
+
+                    if(currentValues?.courseCategoryId !== course?.categoryId){
+                        //   category is changed -->
+                        formData.append("categoryId",data?.courseCategoryId);
+                    };
+
+                    if(currentValues?.courseImage !== course?.thumbnail){
+                           formData.append("thumbnailImage",data?.courseImage);
+                    }
+
+                    if(currentValues?.courseBenefits !== course?.whatYouWillLearn){
+                          formData.append("whatYouWillLearn",data?.courseBenefits);
+                    };
+
+                    if(currentValues?.coursePrice !== course?.price){
+                          formData.append("price",data?.coursePrice);
+                    };
+
+                    if(currentValues?.courseRequirements.toString() !== course?.instructions.toString()){
+                           formData.append("instructions",JSON.stringify(data?.courseRequirements));
+                    };
+                    
+
+                    setLoading(true);
+                    const result = await editCourseDetails(formData);
+                    setLoading(false);
+                    if(result){
+                         dispatch(setStep(2));
+                         dispatch(setCourse(result));
+                    }
+                }else{
+                     toast.error("No Changes made to the form.")
                 }
+
+                return ;
             }
 
 
             const formData = new FormData();
-
+                 
             formData.append("courseName",data?.courseTitle);
-            formData.append("categoryId",data?.courseCategory);
+                   
             formData.append("price",data?.coursePrice);
             formData.append("whatYouWillLearn",data?.courseBenefits);
-            formData.append("description",data?.desription);
-            formData.append("tags",data?.courseTags);
-            formData.append("instructions",data?.courseRequirements);
+            formData.append("description",data?.description);
+            formData.append("tags",JSON.stringify(data?.courseTags));
+            formData.append("instruction",JSON.stringify(data?.courseRequirements));
             formData.append("thumbnailImage",data?.courseImage);
-            formData.append("categoryId",data?.courseCategoryId)
-              
+            formData.append("categoryId",data?.courseCategoryId);
+            formData.append("status",COURSE_STATUS?.DRAFT)
+
+            setLoading(true);
+            console.log(data?.courseTitle);
+            for(const[key,value] of formData.entries()){
+                  console.log(key,value);
+            };
+            const result = await addCourseDetails(formData);
+          
+
+            if(result){
+                dispatch(setStep(2));
+                dispatch(setCourse(result));
+            }
+                setLoading(false);
           };
 
           useEffect(()=>{
@@ -151,7 +222,7 @@ export default function CourseInformationForm (){
                      {/* course tags */}
                       <ChipInput 
                           label="Tags"
-                          name="CourseTags"
+                          name="courseTags"
                           placeholder="Enter Tags and Press Enter"
                           register={register}
                           setValue={setValue}
