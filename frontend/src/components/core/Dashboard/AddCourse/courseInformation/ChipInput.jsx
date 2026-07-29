@@ -8,48 +8,30 @@ import { MdClose } from "react-icons/md"
 
       const [chips,setChips]=useState([]);
 
-  useEffect(()=>{
+        
+     function handleKeyDown(event){
+          
+        if(event.key === "Enter" || event.key === ","){
+              event.preventDefault();
 
-    if(editCourse){
-        setChips(course?.tags);
-    }
-         register(name,{required:true,validate:(value)=>value.length > 0})
-   },[]);
+              const chipValue = event.target.value.trim();
 
+              if(chipValue && !chips.includes(chipValue)){
+                      
+                   const newChips = [...chips,chipValue] ;
+                    setChips(newChips);
 
+                    event.target.value="";
+              }
+        }       
+     } ;
 
-  useEffect(()=>{
-          setValue(name,chips)
-  },[chips])
+     useEffect(()=>{
+          console.log(chips);
+          setValue(name,chips);
+     },[chips]);
 
-
-
-   function handleKeyDown(event){
-
-    // if the user press "enter" or "," then --->
-
-       if(event.key ==="Enter" || event.key === ","){
-            
-           event.preventDefault();
-            
-           const chipValue =event.target.value.trim();
-           
-           if(chipValue && !chips.includes(chipValue)){
-
-                 const newChips =[...chips,chipValue]            
-                 setChips(newChips);
-                 event.target.value ="";
-           }
-       }
-
-   }
-
-   function handleDeleteChip(chipIndex){
-           const checkChip = chips.filter((_,index)=>index !== chipIndex)
-
-           setChips(checkChip);
-   }
-
+ 
      return (
        <div className='flex flex-col space-y-2'>
               <label  htmlFor={name} className='text-sm text-richblack-5'>
