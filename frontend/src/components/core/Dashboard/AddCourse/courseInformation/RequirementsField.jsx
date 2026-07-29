@@ -9,12 +9,25 @@ export default function RequirementsField({name,label,getvalue,setValue,errors,r
 
 
     
-    function handleAddRequirement(){
+    function handleAddRequirement(e){
+        e.preventDefault();
          if(requirement){
             setRequirementsList([...requirementsList,requirement]);
             setRequirement("");
          }
     }
+    
+    useEffect(()=>{
+          if(editCourse){
+               setRequirementsList(course?.instructions);
+          }
+
+          register(name,{required:true,validate: (value)=>value.length > 0})
+    },[]);
+
+    useEffect(()=>{
+        setValue(name,requirementsList);
+    },[requirementsList])
 
     function handleRemoveRequirement(index){
             const updateRequirementList = [...requirementsList]
@@ -26,10 +39,7 @@ export default function RequirementsField({name,label,getvalue,setValue,errors,r
     }
 
 
-    useEffect(()=>{
-        setValue(name,requirementsList);
 
-    },[requirementsList]);
 
   return (
     <div className='flex flex-col space-y-2'>
@@ -59,7 +69,7 @@ export default function RequirementsField({name,label,getvalue,setValue,errors,r
             )
            }
            {
-            errors.courseRequirements && (
+            errors[name] && (
                 <span className='ml-2 text-xs tracking-wide text-pink-200'>
                      {label} is required
                 </span>
