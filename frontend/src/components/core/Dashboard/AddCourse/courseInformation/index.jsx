@@ -9,13 +9,14 @@ import IconBtn from './../../../../Common/IconBtn'
 import { addCourseDetails, editCourseDetails, fetchCourseCategory } from "../../../../../services/operations/courseDetailsApi";
 import toast from "react-hot-toast";
 import{COURSE_STATUS} from "../../../../../utils/Constants"
+import { setCourse, setStep } from "../../../../../slices/courseSlice";
 
 
 export default function CourseInformationForm (){
 
       const {handleSubmit,register,formState:{errors},getValues,setValue}= useForm();
      
-      const {course,editCourse,setStep,setCourse}= useSelector(state=>state.course);
+      const {course,editCourse}= useSelector(state=>state.course);
 
       const[loading,setLoading] = useState(false);
 
@@ -91,6 +92,7 @@ export default function CourseInformationForm (){
                     const result = await editCourseDetails(formData);
                     setLoading(false);
                     if(result){
+                        toast.success(result?.message);
                          dispatch(setStep(2));
                          dispatch(setCourse(result));
                     }
@@ -122,7 +124,7 @@ export default function CourseInformationForm (){
             };
             const result = await addCourseDetails(formData);
           
-
+               console.log(result);
             if(result){
                 dispatch(setStep(2));
                 dispatch(setCourse(result));
