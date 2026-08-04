@@ -6,6 +6,10 @@ import IconBtn from '../../../../Common/IconBtn';
 import { IoAddCircleOutline } from "react-icons/io5"
 import { MdNavigateNext } from "react-icons/md"
 import {setStep,setEditCourse} from "../../../../../slices/courseSlice"
+import { useDispatch, useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
+import { createSection, updateSection } from '../../../../../services/operations/courseDetailsApi';
+import NestedView from './NestedView';
 
 export default function CourseBuilderForm() {
 
@@ -15,25 +19,71 @@ export default function CourseBuilderForm() {
 
     const [loading,setLoading] = useState(false);
 
-    
+    const dispatch = useDispatch();
+
+    const {course} = useSelector(state =>state.course);
 
 
-  const onSubmit = (event)=>{
-         event.preventDefault();
+  const onSubmit = async(data)=>{
+         
+           setLoading(true);
+
+           let result ;
+         if(editSectionName){
+          // that means section was pre created
+             result = await updateSection({sectionName:data?.sectionName,sectionId:editSectionName,courseId:course?._id});
+         }else{
+
+          result = await createSection({sectionName:data?.sectionName,courseId:course?._id})
+             
+         }
+
+         if(result){
+             setEditSectionName(null);
+             dispatch(setCourse(result));
+             setValue("sectionName","");
+
+         }
+
+         setLoading(false);
   }
 
+  // back button
   function goBack(){
-   
+        dispatch(setStep(1));
+        dispatch(setEditCourse(true));
   };
 
+  // for next step of course -->
   function goToNext(){
 
+       if(course.sections.length === 0){
+          toast.error("Add atleast one section");
+          return;
+       };
+
+       if(course.sections.some((section)=>section.subSectionsId.length===0)){
+          toast.error("Add atleast one lecture in each section.");
+          return;
+       }
+        
+       dispatch(setStep(3));
   }
 
   // cancel edit section --->
   function cancelEdit(){
            setEditSectionName(null);
            setValue("sectionName","");
+  }
+
+  function handleChangeEditSectionName(sectionId,sectionName){
+         if(editSectionName === sectionId){
+             cancelEdit();
+             return;
+         };
+
+         setEditSectionName(null);
+         setValue("sectionName",sectionName);
   }
 
 
@@ -69,6 +119,11 @@ export default function CourseBuilderForm() {
                   }
                </div>
            </form>
+           {
+               course?.sections.length > 0 && (
+                 <NestedView handleChangeEditSectionName ={handleChangeEditSectionName}/>
+               )
+           }
            <div  className="flex justify-end gap-x-3">
                <button  onClick={goBack} className={`flex cursor-pointer items-center gap-x-2 rounded-md bg-richblack-300 py-[8px] px-[20px] font-semibold text-richblack-900`}>
                    Back
