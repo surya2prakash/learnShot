@@ -1,8 +1,11 @@
-import react, { useState } from 'react'
+import react, { useEffect, useState } from 'react'
 import { RxCross2 } from "react-icons/rx"
 import Upload from "../Upload"
 import  {useForm}    from 'react-hook-form'
 import IconBtn from '../../../../Common/IconBtn';
+import { createSubSection } from '../../../../../services/operations/courseDetailsApi';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCourse } from '../../../../../slices/courseSlice';
 
 
 export default function SubSectionModal({modalData,setModalData,add=false,edit=false,view=false}) {
@@ -11,14 +14,53 @@ export default function SubSectionModal({modalData,setModalData,add=false,edit=f
       const {register,handleSubmit,setValue,getValues,formState:{errors}} = useForm();
       const [loading,setLoading] =useState(false);
 
+      const {course} = useSelector(state => state.course);
 
-      function onSubmit (){
+      const dispatch = useDispatch();
+
+
+      useEffect(()=>{
+           if(view || edit){
+                setValue("lectureTitle",modalData?.title);
+                setValue("lectureDescription",modalData?.description);
+                setValue("lectureVideo",modalData?.videoFile);
+           }
+             
+      },[])
+
+      const onSubmit= async(data)=>{
+              console.log(data);
+            const formData = new FormData();
+
+             formData.append("sectionId",modalData);
+             formData.append("title",data?.lectureTitle);
+             formData.append("description",data?.lectureDescription);
+             formData.append("videoFile",data?.lectureVideo);
+
+             setLoading(true);
+
+             const result = await createSubSection(formData);
+
+             console.log(result);
+
+             if(result){
+               
+                const updateCourseContent = course?.sections.map((section,idx)=>(
+                       section?._id === modalData ? result : section 
+                ))
+               
+                const updatedCourse ={...course,sections:updateCourseContent};
+
+                dispatch(setCourse(updatedCourse));
+             }
+
+             setLoading(false);
 
       }
     
 
       return(
-        <div className='fixed inset-0 z-[1000] !mt-0 grid h-screen w-screen place-items-center overflow-auto bg-white opacity-10 backdrop-blur-sm'>
+        <div className='fixed inset-0 z-[1000] !mt-0 grid h-screen w-screen place-items-center overflow-auto bg-white bg-opacity-10 backdrop-blur-sm'>
             <div className='my-10 w-11/12 max-w-[700px] rounded-lg border border-richblack-400 bg-richblack-800'>
 
                  <div className='flex items-center justify-between rounded-t-lg bg-richblack-700 p-5'>
@@ -48,7 +90,7 @@ export default function SubSectionModal({modalData,setModalData,add=false,edit=f
                         <label htmlFor='lecture-title' className='text-sm text-richblack-5'>
                                 Lecture Title
                         </label>
-                        <input type='text' id='lecture-title' placeholder='Enter Lecture Title' {...register("lectureTitile",{required:true})}
+                        <input type='text' id='lecture-title' placeholder='Enter Lecture Title' {...register("lectureTitle",{required:true})}
                           className='form-style w-full' />
                         {
                             errors.lectureTitle && (<span className='ml-2 text-xs tracking-wide text-pink-200'>
