@@ -59,8 +59,8 @@ export const fetchCourseDetails = async(courseId)=>{
         if(!response?.data?.success){
               throw new Error("Could Not Fetch Course Details.")
         };
-
-        result = resposne?.data?.data;
+             console.log("line 62 --->",response)
+        result = response?.data?.data;
 
        }catch(error){
           console.log("Get All Course api error -->",error);
@@ -73,11 +73,11 @@ export const fetchCourseDetails = async(courseId)=>{
 
 export const fetchCourseCategory =async()=>{
          const toastId = toast.loading("Loading...");
-            const result = [];
+            let result = [];
          try{
 
             const response = await apiConnector("GET",COURSE_CATEGORIES_API);
-
+                
             if(!response?.data?.success){
                  throw new Error("Could not fetch course Category");  
             };
@@ -97,19 +97,17 @@ export const addCourseDetails = async(data)=>{
            
     const toastId = toast.loading("Loading...");
 
-          const result = [];
+          let result = [];
        try{
-          const response = await apiConnector("POST",CREATE_COURSE_API,{
-            data
-          });
+          const response = await apiConnector("POST",CREATE_COURSE_API,data);
 
           if(!response?.data?.success){
                throw new Error("Could not Add course Details")
           };
-
-          result = response?.data?.data;
+            console.log(response);
+          result = response?.data;
        }catch(error){
-            console.log("Add Course Details Api error")
+            console.log("Add Course Details Api error-->",error);
             toast.error(error?.message);
        }finally{
             toast.dismiss(toastId);
@@ -143,7 +141,7 @@ export const createSection = async(data)=>{
        
     const toastId = toast.loading("Loading...");
 
-    const result = [];
+    let result = [];
 
        try{
              const response = await apiConnector("POST",CREATE_SECTION_API,{
@@ -153,8 +151,8 @@ export const createSection = async(data)=>{
              if(!response?.data?.success){
                   throw new Error("Could not create section");
              };
-
-         result = resposne?.data?.data
+              console.log(response);
+         result = response?.data?.data
        }catch(error){
             console.log(error);
             toast.error(error?.message);
@@ -167,12 +165,12 @@ export const createSection = async(data)=>{
 export const createSubSection = async(data)=>{
        
        const toastId = toast.loading("Loading...");
-       const result = null  ;
+       let result = null  ;
         try{
 
-          const response = await apiConnector("POST",CREATE_SUBSECTION_API,{
+          const response = await apiConnector("POST",CREATE_SUBSECTION_API,
                data
-          });
+          );
 
           if(!response?.data?.success){
                 throw new Error("Could not create Sub section");
@@ -243,13 +241,13 @@ export const updateSubSection = async(data)=>{
 export const deleteSection = async(data)=>{
         
         const toastId = toast.loading("Loading...");
-        const result = null ;
+        let result = null ;
 
         try{
-           const response = await apiConnector("DELETE",DELETE_SECTION_API,{
+           const response = await apiConnector("DELETE",DELETE_SECTION_API,
                data
-           })
-
+           );
+             console.log("delete Section Call ->",response);
            if(!response?.data?.success){
                  throw new Error("Could not Delete section");
            };
