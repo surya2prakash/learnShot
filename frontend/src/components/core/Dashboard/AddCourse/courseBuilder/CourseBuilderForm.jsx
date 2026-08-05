@@ -1,6 +1,6 @@
 
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import IconBtn from '../../../../Common/IconBtn';
 import { IoAddCircleOutline } from "react-icons/io5"
@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import { createSection, updateSection } from '../../../../../services/operations/courseDetailsApi';
 import NestedView from './NestedView';
+import {setCourse} from "../../../../../slices/courseSlice"
 
 export default function CourseBuilderForm() {
 
@@ -21,7 +22,7 @@ export default function CourseBuilderForm() {
 
     const dispatch = useDispatch();
 
-    const {course} = useSelector(state =>state.course);
+    const {course} = useSelector(state => state.course);
 
 
   const onSubmit = async(data)=>{
@@ -29,6 +30,7 @@ export default function CourseBuilderForm() {
            setLoading(true);
 
            let result ;
+
          if(editSectionName){
           // that means section was pre created
              result = await updateSection({sectionName:data?.sectionName,sectionId:editSectionName,courseId:course?._id});
@@ -37,7 +39,7 @@ export default function CourseBuilderForm() {
           result = await createSection({sectionName:data?.sectionName,courseId:course?._id})
              
          }
-
+            console.log("section on submit -->",result);
          if(result){
              setEditSectionName(null);
              dispatch(setCourse(result));
@@ -86,6 +88,9 @@ export default function CourseBuilderForm() {
          setValue("sectionName",sectionName);
   }
 
+  useEffect(()=>{
+       console.log(course.sections.length);    
+  },[])
 
   return (
     <div className="space-y-8 rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-6">
