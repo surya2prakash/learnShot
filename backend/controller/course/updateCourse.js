@@ -1,5 +1,5 @@
 const Course = require("../../model/course");
-const uploadToCloudinary = require("../../utility/uploadToCloudinary");
+const {uploadToCloudinary} = require("../../utility/uploadToCloudinary");
 
 require("dotenv").config();
 
@@ -8,10 +8,13 @@ require("dotenv").config();
 exports.editCourse = async(req,res) =>{
        try{
 
-          const {courseId} = req.body ;
+          const  updates = req.body ;
+
+          
 
         //   updated 
-          const updates = req.body ;
+                const courseId = updates?.courseId;
+             
 
           const isCourseExist = await Course.findById(courseId);
 
@@ -22,32 +25,45 @@ exports.editCourse = async(req,res) =>{
               })
           };
             
-          if(req.files || req.files.thumbnailImage){
-                const thumbnail =  req.files.thumbnailImage;
+      //     if(req.files || req.files.thumbnailImage){
+      //           const thumbnail =  req.files.thumbnailImage;
 
-              const result =  await uploadToCloudinary(thumbnail,process.env.THUMBNAIL_FOLDER);
+      //         const result =  await uploadToCloudinary(thumbnail,process.env.THUMBNAIL_FOLDER);
 
-                isCourseExist.thumbnail = result?.secure_url ;
-          }
+      //           isCourseExist.thumbnail = result?.secure_url ;
+      //     }
 
 
 
 
         //   updated the field which present in updates -->
 
-          for(const key in updates){
+          for(const key of Object.keys(updates)){
                  
-                  if(updates.hasOwnProperty(key)){
+                 
+                  
+                       
                         if(key === 'tag' || key === 'instructions'){
                               isCourseExist[key] = JSON.parse(updates[key])
                         }else{
                              isCourseExist[key] = updates[key];
                         }
-                  }
+                  
           }
          await isCourseExist.save();
 
-         const updatedCourse = await Course.findById(isCourseExist?._id);
+         const updatedCourse = await Course.findById(isCourseExist?._id).populate({
+              model:"Section",
+              path:"sections",
+               populate:{
+                    model:"SubSection",
+                    path:"subSectionsId"
+               }
+             
+
+         });
+
+         
 
          return res.status(200).json({
                 success:true,
