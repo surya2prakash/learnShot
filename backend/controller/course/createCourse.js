@@ -4,7 +4,7 @@
  const Category = require("../../model/category");
  const RatingAndReviews = require("../../model/ratingAndReviews");
  const User = require("../../model/user");
- const uploadToCloudinary = require("../../utility/uploadToCloudinary");
+ const {uploadToCloudinary} = require("../../utility/uploadToCloudinary");
 
  require("dotenv").config();
 
@@ -12,9 +12,12 @@ exports.createcourse = async(req,res) =>{
       try{
         // courseName ,description , whatyouwilllearn,price ,tag,instruction,status
         const {courseName,description,whatYouWillLearn,price,tags,instruction,status,categoryId} = req.body;
-          
+             
+    
         // userId from payload -->
            const userId = req.user.id;
+
+          
 
            if(!courseName || !description || !whatYouWillLearn || !price || !categoryId || !instruction ){
                  return res.status(400).json({
@@ -25,7 +28,7 @@ exports.createcourse = async(req,res) =>{
            
           //  thumbnail file from request files
            const thumbnail = req.files.thumbnailImage ;
-
+                
            if(!thumbnail){
               return res.status(400).json({
                  success:false,
@@ -38,7 +41,9 @@ exports.createcourse = async(req,res) =>{
            }
 
           //  check userId (instructor) ---> in doc 
-           const instructorDetails = await User.findById(userId,{accountType:'Instructor'});
+           const instructorDetails = await User.findOne({_id:userId,accountType:'Instructor'});
+
+           
 
            if(!instructorDetails){
               return res.status(404).json({
@@ -73,8 +78,8 @@ exports.createcourse = async(req,res) =>{
                                                        status:status,
                                                        thumbnail:imageUpload.secure_url,
                                                        instructions:newInstruction,
-                                                       tag:newTag
-
+                                                       tag:newTag,
+                                                       instructorId:instructorDetails?._id
                                                  });
 
            
@@ -88,7 +93,8 @@ exports.createcourse = async(req,res) =>{
         
           return res.status(201).json({
              success:true,
-             message:"Course Create."
+             message:"Course Create.",
+             data:newCourse
           })
 
 
