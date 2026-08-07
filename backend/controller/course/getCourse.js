@@ -54,7 +54,12 @@ exports.singleCourse = async(req,res) =>{
 
         //  now find that course 
 
-        const isCourseExist = await Course.findById(courseId);
+        const isCourseExist = await Course.findById(courseId).populate({model:"Section",path:"sections",
+            populate:{
+                  model:"SubSection",
+                  path:"subSectionsId"
+            }
+        });
                 
         if(!isCourseExist){
               return res.status(404).json({
@@ -77,4 +82,33 @@ exports.singleCourse = async(req,res) =>{
               message:"Internal Server Error."
           })
       }
+}
+
+exports.getInstructorCourses = async(req,res) =>{
+        try{
+
+             const instructorId = req.user.id ;
+
+             if(!instructorId){
+                   return res.status(400).json({
+                        success:false,
+                        message:"Id is missing."
+                   })
+             };
+
+            // 
+             const getAllInstructorCourse = await Course.find({instructorId:instructorId});
+
+             return res.status(200).json({
+                    success:true,
+                    message:"Instructor All Course",
+                    data:getAllInstructorCourse
+             })
+
+        }catch(error){
+             return res.status(500).json({
+                   success:false,
+                   message:"Internal Server Error."
+             })
+        }
 }
