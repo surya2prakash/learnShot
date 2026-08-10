@@ -1,14 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import IconBtn from "../../Common/IconBtn";
 import { VscAdd } from "react-icons/vsc"
 import CoursesTable from "./InstructorCourses/CoursesTable";
 import { useNavigate } from "react-router-dom";
+import { fetchInstructorCourse } from "../../../services/operations/courseDetailsApi";
 
 
 export default function MyCourses(){
     
     const[courses,setCourses] = useState([]);
     const navigate = useNavigate();
+
+
+
+    const fetchCourse = async()=>{
+           const result = await fetchInstructorCourse();
+           console.log(result);
+           if(result){
+              setCourses(result);
+           }
+    }
+
+    useEffect(()=>{
+        fetchCourse();
+    },[])
 
         return (
            <div >
