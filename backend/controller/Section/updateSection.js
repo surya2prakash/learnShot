@@ -24,7 +24,27 @@ exports.updatesection = async(req,res) =>{
               if(sectionName !== undefined){
                       const checkSection = await Section.findByIdAndUpdate(sectionId,{sectionName:sectionName},{new:true}).exec();
 
-                      const updatedCourse = await Course.findByIdAndUpdate(courseId);
+                      const updatedCourse = await Course.findByIdAndUpdate(courseId).populate({
+                  path:"instructorId",
+                  model:"User",
+                  populate:{
+                        path:"profileId",
+                        model:"Profile" 
+                  }
+            }).populate({
+                  path:"categoryId",
+                  model:"Category"
+            }).populate({
+                  path:"ratingAndReviews",
+                  model:"RatingAndReviews"
+            }).populate({
+                   path:"sections",
+                   model:"Section",
+                   populate:{
+                        path:"subSectionsId",
+                        model:"SubSection"
+                   }
+            }).exec();
 
                       return res.status(200).json({
                            success:true,
