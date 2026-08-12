@@ -5,17 +5,20 @@ exports.createsection = async(req,res) =>{
         try{
            
             // sectionName and courseId from request.body
-            const {sectionName,courseId} = req.body;
+            const{data }= req.body;
 
-            console.log(sectionName,courseId);
+            
 
+            const sectionName = data?.sectionName ;
+            const courseId = data?.courseId;
+               
             if(!sectionName){
                   return res.status(400).json({
                      success:false,
                      message:"Section Name required."
                   });
             };
-
+             
             if(!courseId){
                  return res.status(400).json({
                      success:false,
@@ -24,21 +27,24 @@ exports.createsection = async(req,res) =>{
             };
 
             const isCourseExist = await Course.findById(courseId);
-
+              
             if(!isCourseExist){
                   return res.status(404).json({
                      success:false,
                      message:"Course is Missing."
                   });
             };
-
+                
             const newSection = await Section.create({
                   sectionName:sectionName
                   
             });
 
-           const updatedCourse = await Course.findByIdAndUpdate(courseId,{$push:{sections:newSection?._id}},{new:true}).exec();
-
+           const updatedCourse = await Course.findByIdAndUpdate(courseId,{$push:{sections:newSection?._id}},{new:true}).populate({
+              model:"Section",
+              path:"sections"
+           }).exec();
+               
            return res.status(201).json({
                success:true,
                message:"Section Created.",
