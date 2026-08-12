@@ -7,8 +7,9 @@ const Course = require("../../model/course");
 exports.deletesection = async(req,res) =>{
       try{
 
-        const {sectionId ,courseId} = req.body ;
-         
+        const {sectionId,courseId} = req.body ;
+               
+            
               if(!sectionId){
                   return res.status(400).json({
                      success:false,
@@ -25,7 +26,7 @@ exports.deletesection = async(req,res) =>{
 
             // pull the sectionId from the course ->
 
-            const isPulledSection = await Course.findById(courseId,{$pull:{sections:sectionId}},{new:true});
+            const isPulledSection = await Course.findByIdAndUpdate(courseId,{$pull:{sections:sectionId}},{new:true});
 
             // now  the section -->
               const findSection = await Section.findById(sectionId);
@@ -37,7 +38,9 @@ exports.deletesection = async(req,res) =>{
             //    now delete the section --->
                 const removeSection =await Section.findByIdAndDelete(sectionId);
 
-                const updatedCourse = await Course.findById(courseId);
+                const updatedCourse = await Course.findById(courseId).populate({model:"Section",path:"sections"});
+
+                
 
                 return res.status(200).json({
                      success:true,
