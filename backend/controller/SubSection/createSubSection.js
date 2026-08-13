@@ -9,8 +9,12 @@ require("dotenv").config();
 exports.createsubSection = async(req,res) =>{
       try{
            const {title,description,sectionId} = req.body;
+
+           
             
            const video = req.files.videoFile ;
+
+           console.log("video -->",video);
 
            if(!title || !description){
                return res.status(400).json({
@@ -54,7 +58,7 @@ exports.createsubSection = async(req,res) =>{
 
            await newSubSection.save();
 
-        const updatedSection =  await Section.findByIdAndUpdate(sectionId,{$push:{subSectionsId:newSubSection?._id}},{new:true});
+        const updatedSection =  await Section.findByIdAndUpdate(sectionId,{$push:{subSectionsId:newSubSection?._id}},{new:true}).populate({model:"SubSection" , path:"subSectionsId"});
    
           return res.status(201).json({
               success:true,
