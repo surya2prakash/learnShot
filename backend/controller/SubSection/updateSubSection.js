@@ -11,6 +11,8 @@ exports.updatesubsection = async(req,res) =>{
             
             const {sectionId,subSectionId,title,description} = req.body ;
 
+        
+                
            const subsection = await SubSection.findById(subSectionId);
 
         // if subsection not found in db then -->
@@ -43,7 +45,10 @@ exports.updatesubsection = async(req,res) =>{
              
         await subsection.save();
 
-        const section = await Section.findById(sectionId);
+        const section = await Section.findById(sectionId).populate({
+                path:"subSectionsId",
+                model:"SubSection"
+        });
 
         return res.status(200).json({
                success:true,
