@@ -22,9 +22,10 @@ const courseSchema = new mongoose.Schema(
               trim:true
           },
         //   instuctor Id --->
-          instuctorId:{
+          instructorId:{
               type:mongoose.Schema.Types.ObjectId,
-              ref:"User"
+              ref:"User",
+              required:true
           },
 
         //   course price --->
@@ -53,8 +54,9 @@ const courseSchema = new mongoose.Schema(
           },
         //   students enrolled in course --->
           studentEnrolled:{
-             type:mongoose.Schema.Types.ObjectId,
-             ref:"User"
+             type:[mongoose.Schema.Types.ObjectId],
+             ref:"User",
+             default:[]
           },
           //instructions --->
           instructions:{
