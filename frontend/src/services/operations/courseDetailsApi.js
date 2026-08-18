@@ -28,6 +28,7 @@ const {
 // get All course ----->
 export const getAllCourse = async()=>{
     const toastId = toast.loading("Loading...");
+   
     const result = [];
        try{
             const response = await apiConnector("GET",GET_ALL_COURSE_API);
@@ -42,6 +43,7 @@ export const getAllCourse = async()=>{
            toast.error(error?.message);
        }finally{
           toast.dismiss(toastId);
+        
           return result;
        }
 
@@ -49,6 +51,7 @@ export const getAllCourse = async()=>{
 
 export const fetchCourseDetails = async(courseId)=>{
        const toastId = toast.loading("Loading...");
+      
          const result =[];
        try{
           
@@ -67,12 +70,14 @@ export const fetchCourseDetails = async(courseId)=>{
           toast.error(error.message);
        }finally{
            toast.dismiss(toastId);
+          
            return result;
        }
 };
 
 export const fetchCourseCategory =async()=>{
          const toastId = toast.loading("Loading...");
+         
             let result = [];
          try{
 
@@ -89,6 +94,7 @@ export const fetchCourseCategory =async()=>{
               toast.error(error?.message);
          }finally{
               toast.dismiss(toastId);
+            
               return result;
          }
 };
@@ -96,6 +102,7 @@ export const fetchCourseCategory =async()=>{
 export const addCourseDetails = async(data)=>{
            
     const toastId = toast.loading("Loading...");
+    
 
           let result = [];
        try{
@@ -111,21 +118,23 @@ export const addCourseDetails = async(data)=>{
             toast.error(error?.message);
        }finally{
             toast.dismiss(toastId);
+            
             return result;
        }
 };
 
-export const editCourseDetails = async() =>{
+export const editCourseDetails = async(data) =>{
       const toastId = toast.loading("Loading...");
-       const result = null;
+     
+       let result = null;
       try{
 
-        const response = await apiConnector("POST",EDIT_COURSE_API);
+        const response = await apiConnector("POST",EDIT_COURSE_API,data);
 
         if(!response?.data?.success){
                throw new Error("Could not Edit course Details.")
         };
-
+         console.log(response);
         result = response?.data?.data;
 
       }catch(error){
@@ -133,6 +142,7 @@ export const editCourseDetails = async() =>{
           toast.error(error?.message);
       }finally{
            toast.dismiss(toastId);
+          
            return result;
       }
 }
@@ -140,6 +150,7 @@ export const editCourseDetails = async() =>{
 export const createSection = async(data)=>{
        
     const toastId = toast.loading("Loading...");
+    
 
     let result = [];
 
@@ -158,6 +169,7 @@ export const createSection = async(data)=>{
             toast.error(error?.message);
        }finally{
             toast.dismiss(toastId);
+          
             return result
        }
 };
@@ -165,6 +177,7 @@ export const createSection = async(data)=>{
 export const createSubSection = async(data)=>{
        
        const toastId = toast.loading("Loading...");
+       
        let result = null  ;
         try{
 
@@ -184,20 +197,22 @@ export const createSubSection = async(data)=>{
         
         }finally{
             toast.dismiss(toastId)
+           
             return result
         }
 };
 
 export const updateSection = async(data)=>{
        const toastId = toast.loading("Loading...");
+      
 
-       const result =null;
+       let result =null;
 
        try{
 
-          const response = await apiConnector("PATCH",UPDATE_SECTION_API,{
+          const response = await apiConnector("PATCH",UPDATE_SECTION_API,
                data
-          });
+          );
 
           if(!response?.data?.success){
                  throw new Error("Could not update section");
@@ -210,19 +225,21 @@ export const updateSection = async(data)=>{
             console.log("Update Section api error -->",error);
        }finally{
             toast.dismiss(toastId);
+           
             return result;
        }
 };
 
 export const updateSubSection = async(data)=>{
        const toastId = toast.loading("Loading...");
-       const result =null ;
+     
+       let result =null ;
 
        try{
 
-          const response = await apiConnector("PATCH",UPDATE_SUBSECTION_API,{
+          const response = await apiConnector("PATCH",UPDATE_SUBSECTION_API,
                data
-          });
+          );
 
           if(!response?.data?.success){
                  throw new Error("Could not update sub section");
@@ -234,6 +251,7 @@ export const updateSubSection = async(data)=>{
             console.log("Update Sub Section api error -->",error);
        }finally{
             toast.dismiss(toastId);
+          
             return result;
        }
 };
@@ -241,7 +259,8 @@ export const updateSubSection = async(data)=>{
 export const deleteSection = async(data)=>{
         
         const toastId = toast.loading("Loading...");
-        let result = null ;
+        
+        let result  ;
 
         try{
            const response = await apiConnector("DELETE",DELETE_SECTION_API,
@@ -253,19 +272,23 @@ export const deleteSection = async(data)=>{
            };
 
            result = response?.data?.data ;
+
+           console.log(result);
         }catch(error){
             toast.error(error?.message);
             console.log("Delete Section Api Error -->",error);
         }finally{
            toast.dismiss(toastId);
+          
            return result ;
         }
 };
 
 export const deteleSubSection = async(data) =>{
         const toastId = toast.loading("Loading...");
+       
 
-        const result = null ;
+        let result = null ;
 
         try{
 
@@ -282,14 +305,16 @@ export const deteleSubSection = async(data) =>{
              toast.error(error?.message);
         }finally{
              toast.dismiss(toastId);
+           
              return result;
         }
 };
 
 export const deleteCourse = async(data) =>{
        const toastId = toast.loading("Loading...");
-       
-       const result = null ;
+      
+            console.log(data);
+       let result = null ;
 
        try{
 
@@ -299,13 +324,14 @@ export const deleteCourse = async(data) =>{
                  throw new Error("Could not Delete the Course");
           };
 
-          result = response?.data?.data;
+          result = response?.data;
 
        }catch(error){
             toast.error(error?.message);
             console.log("Delete Course Error Api -->",error);
        }finally{
              toast.dismiss(toastId);
+             
              return result ;
        }
 }
@@ -313,8 +339,9 @@ export const deleteCourse = async(data) =>{
 export const fetchInstructorCourse = async()=>{
      // this fetch the specific instructor all courses -->
      const toastId = toast.loading("Loading...");
+     
 
-     const result = null ;
+     let result = null ;
 
      try{
           const response = await apiConnector("GET",GET_ALL_INSTRUCTOR_COURSE_API);
@@ -329,21 +356,23 @@ export const fetchInstructorCourse = async()=>{
             console.error("Error while Instructor course api -->",error);
      }finally{
             toast.dismiss(toastId);
+            
             return result;
      }
 };
 
 // geting full details of the course --->
-export const detailsOfCourse = async()=>{
+export const detailsOfCourse = async(data)=>{
         const toastId = toast.loading("Loading...");
+       
 
-        const result =null;
+        let result =null;
 
         try{
 
-          const repsosne = await apiConnector("GET",GET_FULLCOURSE_DETAILS_AUTHENTICATED);
+          const response = await apiConnector("POST",GET_FULLCOURSE_DETAILS_AUTHENTICATED,data);
 
-          if(!repsosne?.data?.success){
+          if(!response?.data?.success){
                throw new Error("Could Not Get Details Of Course");
           }
 
@@ -356,7 +385,8 @@ export const detailsOfCourse = async()=>{
 
      
         }finally{
-            toast.dismiss(toast)
+            toast.dismiss(toastId)
+            
 
             return result ;
         }
@@ -366,8 +396,9 @@ export const detailsOfCourse = async()=>{
 
 export const markLectureComplete = async(data)=>{
        const toastId = toast.loading("Loading...");
+       
 
-       const result = null ;
+       let result = null ;
 
        try{
           const response = await apiConnector("POST",LECTURE_COMPLETION_API,data);
@@ -384,14 +415,16 @@ export const markLectureComplete = async(data)=>{
 
        }finally{
              toast.dismiss(toastId);
+             
              return result ;
        }
 }
 
 export const createRating = async(data) =>{
         const toastId = toast.loading("Loading...");
+       
 
-        const result = null ;
+        let result = null ;
 
         try{
 
@@ -408,6 +441,7 @@ export const createRating = async(data) =>{
             console.log("Error while Create Rating api -->",error);
         }finally{
             toast.dismiss(toastId);
+           
             return result ;
         }
 }
