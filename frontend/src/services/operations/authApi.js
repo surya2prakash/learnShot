@@ -5,7 +5,7 @@ import {toast} from 'react-hot-toast'
 import {createAsyncThunk} from '@reduxjs/toolkit'
 
 
-const {LOGIN_API,SIGNUP_API,SENDOTP_API,RESTPASSTOKEN_API,RESTPASSWORD_API} = endPoints ;
+const {LOGIN_API,SIGNUP_API,SENDOTP_API,RESTPASSTOKEN_API,RESTPASSWORD_API,LOGOUT_API} = endPoints ;
 const {CONTACT_US_API}= contactusEndPoint
 
 
@@ -180,9 +180,12 @@ export const updateResetPassword = createAsyncThunk(
 
 export const logout = createAsyncThunk(
      "auth/logout",
+    
      async({navigate},thunkAPI)=>{
          try{
-            
+              
+            await apiConnector("POST",LOGOUT_API);
+
           toast.success("Log-Out");
           navigate("/");
               
