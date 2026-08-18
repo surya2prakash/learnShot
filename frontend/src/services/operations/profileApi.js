@@ -5,7 +5,7 @@ import {profileEndPoints} from "../apis"
 import toast from "react-hot-toast";
 
 
-  const {GET_USER_ENROLLED_COURSE_API} = profileEndPoints ;
+  const {GET_USER_ENROLLED_COURSE_API,GET_INSTRUCTOR_DATA_API,GET_USER_DETAILS_API} = profileEndPoints ;
 
 export const getEnrolledCourses =   async()=>{
         const toastId = toast.loading("loading...");
@@ -30,4 +30,27 @@ export const getEnrolledCourses =   async()=>{
           }
     }
 
+
+    export const getInstructorData = async () =>{
+             const toastId = toast.loading("Loading...");
+              
+             let result = [];
+             try{
+                
+              const response = await apiConnector("GET",GET_INSTRUCTOR_DATA_API);
+                   
+              if(!response?.data?.success){
+                    throw new Error(response?.data?.message)
+              }
+
+              result = response?.data?.data ;
+              
+             }catch(error){
+                 console.error(error);
+
+             }finally{
+                  toast.dismiss(toastId);
+                    return result ;
+             }
+    }
 
