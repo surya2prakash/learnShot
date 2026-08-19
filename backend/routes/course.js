@@ -7,7 +7,7 @@ const {auth,isInstructor, isStudent} = require("../middleware/auth");
 
 // course ---------------->
 const {createcourse} = require("../controller/course/createCourse");
-const {singleCourse,allCourse,getInstructorCourses} = require("../controller/course/getCourse");
+const {singleCourse,allCourse,getInstructorCourses,getFullCourseDetails} = require("../controller/course/getCourse");
 const {editCourse} = require("../controller/course/updateCourse");
 const {deletecourse} = require("../controller/course/deleteCourse")
 
@@ -27,7 +27,7 @@ const {updateCourseProgress} = require("../controller/courseProgress/courseProgr
 
 // review - and rating ---------------->
 
-const {ratingAndReviews} = require("../controller/ratingAndReviews/createRating");
+const {ratingAndReviews,getAllReviewRating,getAverageRating} = require("../controller/ratingAndReviews/createRating");
 
 
 // category --------------->
@@ -40,9 +40,10 @@ const {getAllCategory}= require("../controller/Category/getCategory");
 router.post("/createcourse",auth,isInstructor,createcourse);
 router.get("/getCourses",auth,allCourse);
 router.get("/getCourse",auth,singleCourse);
-router.patch("/editcourse",auth,isInstructor,editCourse);
+router.post("/editcourse",auth,isInstructor,editCourse);
 router.delete("/deletecourse",auth,isInstructor,deletecourse);
 router.get("/allinstructorcourses",auth,isInstructor,getInstructorCourses);
+router.post("/getFullCourseDetails",auth,getFullCourseDetails);
 
 // *********************************************************************
 // *                       Section                                     *
@@ -50,7 +51,7 @@ router.get("/allinstructorcourses",auth,isInstructor,getInstructorCourses);
 
 router.post("/addsection",auth,isInstructor,createsection);
 router.patch("/updatesection",auth,isInstructor,updatesection);
-router.post("/deletesection",auth,isInstructor,deletesection);
+router.delete("/deletesection",auth,isInstructor,deletesection);
 
 // *********************************************************************
 // *                      Sub-Section                                  *
@@ -74,7 +75,9 @@ router.post("/updatecourseprogress",auth,isStudent,updateCourseProgress);
 // ****************************************************************
 // *                     Rating and Review                        *
 // ****************************************************************
-router.post("/ratingandreview",auth,ratingAndReviews);
+router.post("/ratingandreview",auth,isStudent,ratingAndReviews);
+router.get("/getAverageRating",getAverageRating);
+router.get("/getReviews",getAllReviewRating);
 
 
 
