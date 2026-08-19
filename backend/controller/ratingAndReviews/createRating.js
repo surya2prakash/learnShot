@@ -1,6 +1,7 @@
 const Course = require("../../model/course");
 const User = require("../../model/user");
 const RatingAndReviews = require("../../model/ratingAndReviews");
+const { default: mongoose } = require("mongoose");
 
 exports.ratingAndReviews = async(req,res) =>{
        try{
@@ -70,4 +71,53 @@ exports.ratingAndReviews = async(req,res) =>{
              message:"Internal Server Error ."
           })
        }
+};
+
+exports.getAverageRating = async(req,res) =>{
+        try{
+
+         const {courseId} = req.body ;
+
+         if(!courseId){
+              return res.status(400).json({
+                success:false,
+                message:"Course Id is missing."
+              })
+         };
+
+           const currentAvg = await RatingAndReviews.aggregate([
+            {
+               $match:{
+                  courseId: new mongoose.Types.ObjectId(courseId)
+               }
+            },{
+                $group:{
+                    _id:null,
+                    averageRating:{$avg:rating}
+                }
+            }
+           ]);
+
+           if(currentAvg.length > 0){
+               return res.status(200).json({
+                   success:true,
+                   data:{
+                       avgRating:currentAvg[0].averageRating
+                   }
+               })
+           }
+
+           return res.status(200).json({
+             success:true,
+             data:{
+                avgRating:0
+             }
+           });
+
+        }catch(err){
+            return res.status(500).json({
+                 success:false,
+                 message:"Internal Server Error."
+            })
+        }
 }
