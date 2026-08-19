@@ -121,3 +121,29 @@ exports.getAverageRating = async(req,res) =>{
             })
         }
 }
+
+exports.getAllReviewRating = async(req,res) =>{
+      try{
+
+           const allReviews = await RatingAndReviews.find({}).sort({rating:"desc"}).populate({
+              path:"userId",
+              select:"firstName lastName email image"
+           }).populate({
+               path:"courseId",
+               select:"courseName"
+           }).exec();
+
+           return res.status(200).json({
+               success:true,
+               data:{
+                   allReviews:allReviews
+               }
+           })
+
+      }catch(err){
+           return res.status(500).json({
+            success:false,
+            message:"Internal Server Error."
+           })
+      }
+}
