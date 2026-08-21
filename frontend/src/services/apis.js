@@ -58,7 +58,16 @@ export const courseEndPoints ={
          DELETE_SECTION_API : BASE_URL + "/deletesection" ,
          DELETE_SUBSECTION_API : BASE_URL + "/deletesubsection",
          DELETE_COURSE_API : BASE_URL + "/deletecourse",
-         GET_FULLCOURSE_DETAILS_AUTHENTICATED:BASE_URL+"",
+         GET_FULLCOURSE_DETAILS_AUTHENTICATED:BASE_URL+"/getFullCourseDetails",
          LECTURE_COMPLETION_API :BASE_URL +"",
          CREATE_RATING_API : BASE_URL + "/ratingandreview"
+}
+
+
+export const ratingEndPoints = {
+           REVIEW_DETAILS_API : BASE_URL+"/getReviews"
+}
+
+export const catalogEndPoints ={
+         CATALOG_DATA_API :BASE_URL + "/getCategoryPageDetails"
 }
