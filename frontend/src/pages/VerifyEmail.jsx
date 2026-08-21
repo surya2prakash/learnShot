@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 import OtpInput from 'react-otp-input'
+import { Link } from 'react-router-dom';
+import { BiArrowBack } from "react-icons/bi";
+import { RxCountdownTimer } from "react-icons/rx";
 
 export default function VerifyEmail() {
 
@@ -37,8 +40,21 @@ function otpSubmitHandler(event){
               }
                  
               />
+
+              <button className='w-full bg-yellow-50 py-[12px] px-[12px] rounded-[8px] mt-6 font-medium text-richblack-900'>
+                  Verify Email
+              </button>
                  
             </form>
+            <div className='flex items-center justify-between mt-6'>
+              <Link to={"/signup"}>
+              <p className='flex items-center text-white gap-x-1'>
+               <BiArrowBack/>  Back To Signup</p>
+              </Link>
+              <button  className='flex items-center text-blue-100 gap-x-2 cursor-pointer'>
+                  <RxCountdownTimer/>  Resend it
+              </button>
+            </div>
         </div>
     </div>
   )
