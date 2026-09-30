@@ -1,20 +1,31 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { BiArrowBack } from "react-icons/bi"
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
+import { useDispatch } from 'react-redux';
+import { updateResetPassword } from '../services/operations/authApi';
 
 export default function UpdatePassword() {
 
   const [newPassword,setNewPassword] = useState("");
   const [confirmPassword,setConfirmPassword] = useState("");
 
+  const {id} = useParams();
+
+  const token = id;
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const[showPassword,setShowPassword] = useState(false);
   const[showConfirmPass,setShowConfirmPass] = useState(false);
 
 function submitHandler(e){
         e.preventDefault();
-      console.log("newPass ->",newPassword);
-      console.log("confirmPass ->",confirmPassword);  
+      dispatch(updateResetPassword({newPassword,confirmPassword,token,navigate}));
+
+      setNewPassword("");
+      setConfirmPassword("");
 }
 
   return (
